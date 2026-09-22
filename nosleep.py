@@ -8,16 +8,38 @@ class AwesomeStatusBarApp(rumps.App):
         rumps.alert("jk! no preferences available!")
 
 
-#this part has an issue where if u press the button mutiple times, it will start multiple caffeinate processes. 
+    def no_multi_caffeinate_indef(self, sender):
+        pkill = subprocess.Popen(["pkill", "caffeinate"])
+        pkill.wait()
+        subprocess.Popen(["caffeinate", "-d"])
+
+    def no_multi_caffeinate_1h(self, sender):
+        pkill = subprocess.Popen(["pkill", "caffeinate"])
+        pkill.wait()
+        subprocess.Popen(["caffeinate", "-t", "3600"])
+
+#indefinite
     @rumps.clicked("Turn On NoSleep Indefinitely") #turns on NoSleep indefinitely (until the user toggles it off)
     def turn_on(self, sender):
             self.caffeinate_process = subprocess.Popen(["caffeinate", "-d"])
             sender.state = True
             rumps.alert("NoSleep Toggled on") 
-            if rumps.clicked("Turn On NoSleep Indefinitely") and sender.state == True:  #should fix later bc this closes all available caffeinate processes, but for now it works
-                pkill = subprocess.Popen(["pkill", "caffeinate"])
-                pkill.wait()
-                subprocess.Popen(["caffeinate", "-d"])
+            if rumps.clicked("Turn On NoSleep Indefinitely") and sender.state == True:
+                self.no_multi_caffeinate_indef(sender)
+
+
+#1 hour
+    @rumps.clicked("Turn On NoSleep for 1 Hour") #turns on NoSleep for 1 hour (until the user toggles it off)
+    def turn_on_1_hour(self, sender):
+            self.caffeinate_process = subprocess.Popen(["caffeinate", "-t", "3600"])
+            sender.state = True
+            rumps.alert("NoSleep Toggled on") 
+            if rumps.clicked("Turn On NoSleep for 1 Hour") and sender.state == True:  
+                self.no_multi_caffeinate_1h(sender)
+
+
+#30 minutes
+
 
     #this part works fine as is
     @rumps.clicked("Turn Off NoSleep") #turns off NoSleep (until the user toggles it on)
