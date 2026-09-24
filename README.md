@@ -14,6 +14,7 @@ Download the NoSleep.zip file and open up the NoSleep.app file. Thats it!
 **Tools Used**
 ---------------------------
 *RUMPS (https://github.com/jaredks/rumps) - Simple creating of a menu app on MacOS
+
 *Caffeinate - To prevent screen sleeping
 
 Extras
