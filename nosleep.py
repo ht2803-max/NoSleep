@@ -334,57 +334,6 @@ class AwesomeStatusBarApp(rumps.App):
             self.no_multi_caffeinate_xm(60)
 
 
-#t he following lines 338 to 387 were written using gpt 5.6 terra, i will rewrite this to make it easier to read and also for self understanding.
-    def stop_managed_caffeinate(self):
-        process = getattr(self, "caffeinate_process", None)
-        if process is not None and process.poll() is None:
-            process.terminate()
-
-    def launch_codex_agent(self, prompt):
-        codex_bin = which("codex")
-        if codex_bin is None:
-            rumps.alert("Codex CLI was not found.")
-            return
-
-        self.stop_managed_caffeinate()
-        self.codex_process = subprocess.Popen([codex_bin, "exec", prompt])
-        self.caffeinate_process = subprocess.Popen(["caffeinate", "-di", "-w", str(self.codex_process.pid)])
-
-    def attach_to_agent_pid(self, pid):
-        """Keep the Mac awake until an existing agent process exits."""
-        if not pid.isdecimal() or int(pid) <= 0:
-            rumps.alert("Enter a valid positive process ID (PID).")
-            return
-
-        try:
-            os.kill(int(pid), 0)
-        except ProcessLookupError:
-            rumps.alert("That process is no longer running.")
-            return
-        except PermissionError:
-            rumps.alert("This app does not have permission to inspect that process.")
-            return
-
-        self.stop_managed_caffeinate()
-        self.caffeinate_process = subprocess.Popen(["caffeinate", "-di", "-w", pid])
-        rumps.alert("NoSleep will stop when that agent process exits.")
-
-
-    @rumps.clicked("Agent Mode", "Attach to Running Agent…")
-    def attach_to_running_agent(self, _):
-        response = rumps.Window(
-            "Enter the PID of an already-running agent process.",
-            title="Attach to Running Agent",
-            ok="Attach",
-            cancel=True,
-            dimensions=(320, 24),
-        ).run()
-
-        if response.clicked:
-            self.attach_to_agent_pid(response.text.strip())
-
-
-
 
     @rumps.clicked("Turn Off NoSleep") #turns off NoSleep (until the user toggles it on)
     def turn_off(self, sender):
