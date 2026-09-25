@@ -2,7 +2,8 @@ import rumps
 import subprocess
 import os
 from shutil import which
-
+from AppKit import NSApplication
+from settings_preview import SettingsWindowController
 
 #creates a menu bar app
 class AwesomeStatusBarApp(rumps.App):
@@ -333,6 +334,12 @@ class AwesomeStatusBarApp(rumps.App):
         if rumps.clicked("No Sleep", "60 minutes") and sender.state == True:
             self.no_multi_caffeinate_xm(60)
 
+    @rumps.clicked("Settings")
+    def show_settings(self, _):
+        if not hasattr(self, "settings_controller"):
+            self.settings_controller = SettingsWindowController.alloc().init()
+        self.settings_controller.window.makeKeyAndOrderFront_(None)
+        NSApplication.sharedApplication().activateIgnoringOtherApps_(True)
 
 
     @rumps.clicked("Turn Off NoSleep") #turns off NoSleep (until the user toggles it on)
